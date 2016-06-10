@@ -94,8 +94,14 @@ Hides all lines without matches like `occur' does, but without opening
 a new window."
   :lighter " loccur"
   (if loccur-mode
-      (loccur-1 loccur-current-search)
+      (progn
+	(loccur-1 loccur-current-search)
+	(local-set-key "\C-p" 'l_previous_line)
+	(local-set-key "\C-n" 'l_next_line)
+	)
     (loccur-remove-overlays)
+    (local-unset-key "\C-p")
+    (local-unset-key "\C-n")
     (recenter)))
 
 (defface loccur-face
@@ -317,7 +323,37 @@ containing match"
 
         
     
+(defun l_previous_line()
+  (interactive)
+  (goto-char (line-beginning-position))
+;  (message (number-to-string (point)))
+;  (previous-line)
+;  (line-move -1)
+  (line-move-visual -1)
+;  (forward-line -1)
 
+;  (let (overlays (overlays-at (point)))
+;    (while overlays
+;      (line-move -1)
+;      (message "line-move -1")
+;      (setq overlays (overlays-at (point))))
+;    )
+  (goto-char (line-beginning-position))
+;  (message (number-to-string (point)))
+  (setq endpoint (re-search-forward  loccur-current-search nil t))
+  (goto-char endpoint)
+;  (message (number-to-string (point)))
+;  (message loccur-current-search)
+  )
+
+(defun l_next_line()
+  (interactive)
+  (goto-char (line-beginning-position))
+  (line-move-visual 1)
+  (goto-char (line-beginning-position))
+  (setq endpoint (re-search-forward loccur-current-search nil t))
+  (goto-char endpoint)
+  )
 
 (provide 'loccur)
 ;;; loccur.el ends here
