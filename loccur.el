@@ -139,10 +139,20 @@ Default: t"
 (defvar-local loccur-current-search nil
   "The expression to search in the current active mode.")
 
+(defun my-get-symbol ()
+  "Return a regular expression identifying the symbol at point."
+  (interactive)
+  (let ((symbol (thing-at-point 'symbol)))
+    (when symbol (concat (car highlight-symbol-border-pattern)
+                         (regexp-quote symbol)
+                         (cdr highlight-symbol-border-pattern)))))
+
 (defun loccur-current ()
   "Call `loccur' for the current word."
   (interactive)
-  (loccur (current-word)))
+					;  (loccur (current-word)
+  (loccur (my-get-symbol)
+  ))
 
 
 (defun loccur-previous-match ()
